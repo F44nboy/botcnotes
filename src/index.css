@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+.panel-resize-handle {
+    padding-inline: calc(var(--spacing) * 0.5);
+}

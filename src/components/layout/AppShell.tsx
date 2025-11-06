@@ -10,7 +10,7 @@ interface AppShellProps extends PropsWithChildren {
 
 export function AppShell({ header, footer, children, className = "" }: AppShellProps) {
   return (
-    <div className={`min-h-screen bg-neutral-950 text-neutral-200 ${className}`}>
+    <div className={`min-h-screen text-neutral-200 bg-[url(/background.webp)] bg-cover bg-center px-10 ${className}`}>
       {/* Header */}
       <header className="h-12 border-b border-neutral-800 flex items-center px-3">
         {header ?? <div className="font-semibold">BoTCT Notes</div>}
