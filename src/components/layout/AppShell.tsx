@@ -1,6 +1,9 @@
 // src/components/layout/AppShell.tsx
 import type { PropsWithChildren } from "react";
+import { NewGameSetup } from "@/components/ui/NewGameSetup";
 import type { ReactNode } from "react";
+import { useState } from "react";
+import { HeaderBar } from "../ui/HeaderBar";
 
 interface AppShellProps extends PropsWithChildren {
   header?: ReactNode;
@@ -8,16 +11,16 @@ interface AppShellProps extends PropsWithChildren {
   className?: string;
 }
 
-export function AppShell({ header, footer, children, className = "" }: AppShellProps) {
-  return (
-    <div className={`min-h-screen text-neutral-200 bg-[url(/background.webp)] bg-cover bg-center px-10 ${className}`}>
-      {/* Header */}
-      <header className="h-12 border-b border-neutral-800 flex items-center px-3">
-        {header ?? <div className="font-semibold">BoTCT Notes</div>}
-      </header>
+export function AppShell({footer, children, className = "" }: AppShellProps) {
+  const [isSetupVisible, setIsSetupVisible] = useState(false);
 
-      {/* Main content area */}
-      <main className="p-3">{children}</main>
+  return (
+    <div className={`min-h-screen text-neutral-200 bg-[url(/background.webp)] bg-cover bg-center px-16 pt-4 ${className}`}>
+      <HeaderBar
+        isSetupVisible={isSetupVisible}
+        setIsSetupVisible={setIsSetupVisible}
+      />
+      <main className="p-3">{isSetupVisible && <NewGameSetup />}{!isSetupVisible && children}</main>
 
       {/* Footer (optional) */}
       {footer && (
