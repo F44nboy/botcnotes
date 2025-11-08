@@ -1,6 +1,6 @@
 // src/components/layout/AppShell.tsx
 import type { PropsWithChildren } from "react";
-import { NewGameSetup } from "@/components/ui/NewGameSetup";
+import { GameSetupForm } from "@/components/ui/GameSetupForm";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { HeaderBar } from "../ui/HeaderBar";
@@ -20,7 +20,8 @@ export function AppShell({footer, children, className = "" }: AppShellProps) {
         isSetupVisible={isSetupVisible}
         setIsSetupVisible={setIsSetupVisible}
       />
-      <main className="p-3">{isSetupVisible && <NewGameSetup />}{!isSetupVisible && children}</main>
+      <GameSetupForm isSetupVisible={isSetupVisible} setIsSetupVisible={setIsSetupVisible} />
+      <main className="p-3">{!isSetupVisible && children}</main>
 
       {/* Footer (optional) */}
       {footer && (

@@ -1,17 +1,17 @@
 (() => {
   function extractPlayerNames() {
-    // Alle sichtbaren Spielernamen (ohne Storyteller)
+    // Alle sichtbaren Spielernamen (inkl. Storyteller)
     const nameplates = document.querySelectorAll(".nameplate .name span");
     const allPlayers = Array.from(nameplates)
-      .map(el => el.textContent.trim())
+      .map(el => el.textContent?.trim())
       .filter(Boolean);
 
-    // Storyteller erkennen
+    // Storyteller ermitteln
     const storytellers = Array.from(
       document.querySelectorAll("#left .storyteller .nameplate .name span")
-    ).map(el => el.textContent.trim());
+    ).map(el => el.textContent?.trim());
 
-    // Storyteller herausfiltern
+    // Nur echte Spieler behalten
     const players = allPlayers.filter(n => !storytellers.includes(n));
 
     if (players.length === 0) {
@@ -42,27 +42,28 @@
       padding: "20px 30px",
       borderRadius: "12px",
       boxShadow: "0 0 20px rgba(0,0,0,0.4)",
-      maxWidth: "400px",
+      maxWidth: "500px",
       fontFamily: "sans-serif",
+      textAlign: "center",
     });
 
     const title = document.createElement("h2");
-    title.textContent = "🧑‍🤝‍🧑 Spielerreihenfolge";
+    title.textContent = "🧑‍🤝‍🧑 Spieler (komma-separiert)";
     Object.assign(title.style, {
       marginTop: "0",
       marginBottom: "12px",
       textAlign: "center",
-      fontSize: "1.3rem",
+      fontSize: "1.2rem",
       borderBottom: "2px solid #555",
       paddingBottom: "8px",
     });
     box.appendChild(title);
 
-    // Spieler nummerieren
-    const numberedList = players.map((name, i) => `${i + 1}. ${name}`);
+    // Spieler kommasepariert darstellen
+    const playerString = players.join(", ");
 
     const textarea = document.createElement("textarea");
-    textarea.value = numberedList.join("\n");
+    textarea.value = playerString;
     Object.assign(textarea.style, {
       width: "100%",
       resize: "none",
@@ -70,17 +71,37 @@
       color: "#fff",
       border: "1px solid #444",
       borderRadius: "6px",
-      padding: "6px",
+      padding: "8px",
       fontSize: "0.95rem",
       lineHeight: "1.4",
     });
-    textarea.rows = players.length;
+    textarea.rows = 3;
     box.appendChild(textarea);
+
+    const copyButton = document.createElement("button");
+    copyButton.textContent = "📋 Kopieren";
+    Object.assign(copyButton.style, {
+      marginTop: "10px",
+      width: "100%",
+      padding: "8px",
+      background: "#5a4aa1",
+      border: "none",
+      color: "#fff",
+      borderRadius: "6px",
+      cursor: "pointer",
+      fontSize: "1rem",
+    });
+    copyButton.addEventListener("click", () => {
+      navigator.clipboard.writeText(playerString);
+      copyButton.textContent = "✅ Kopiert!";
+      setTimeout(() => (copyButton.textContent = "📋 Kopieren"), 1500);
+    });
+    box.appendChild(copyButton);
 
     const close = document.createElement("button");
     close.textContent = "Schließen";
     Object.assign(close.style, {
-      marginTop: "12px",
+      marginTop: "8px",
       width: "100%",
       padding: "8px",
       background: "#444",
@@ -88,6 +109,7 @@
       color: "#fff",
       borderRadius: "6px",
       cursor: "pointer",
+      fontSize: "0.9rem",
     });
     close.addEventListener("click", () => overlay.remove());
     box.appendChild(close);
