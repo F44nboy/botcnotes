@@ -1,4 +1,4 @@
-import { PlayerList } from "@/features/players/components/PlayerList";
+import { PlayerList } from "@/components/ui/players/PlayerList";
 
 export function LeftPane() {
 
