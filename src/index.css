@@ -124,3 +124,25 @@
     @apply bg-background text-foreground;
     }
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* track */
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+}
+
+/* thumb */
+::-webkit-scrollbar-thumb {
+  background: #7b3b3b; /* dein Bloody Notes Rot */
+  border-radius: 10px;
+}
+
+/* thumb hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #a85858;
+}

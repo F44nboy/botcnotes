@@ -11,7 +11,4 @@ export type Player = {
   hardclaim?: string; // optional: Hardclaim des Spielers
   notes?: string;    // optional: freie Notizen
 };
-
- 
-          
            

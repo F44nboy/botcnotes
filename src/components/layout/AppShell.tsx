@@ -15,13 +15,13 @@ export function AppShell({footer, children, className = "" }: AppShellProps) {
   const [isSetupVisible, setIsSetupVisible] = useState(false);
 
   return (
-    <div className={`min-h-screen text-neutral-200 bg-[url(/background.webp)] bg-cover bg-center px-16 pt-4 ${className}`}>
+    <div className={`min-h-screen text-neutral-200 bg-[url(/background.webp)] bg-cover bg-center px-5 pt-4 flex flex-col${className}`}>
       <HeaderBar
         isSetupVisible={isSetupVisible}
         setIsSetupVisible={setIsSetupVisible}
       />
       <GameSetupForm isSetupVisible={isSetupVisible} setIsSetupVisible={setIsSetupVisible} />
-      <main className="p-3">{!isSetupVisible && children}</main>
+      <main className="pt-3 flex-1 min-h-0 overflow-y-auto overflow-x-hidden">{!isSetupVisible && children}</main>
 
       {/* Footer (optional) */}
       {footer && (
