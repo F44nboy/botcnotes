@@ -1,62 +1,76 @@
-import { useEffect, useRef, useState } from "react";
+// src/components/PlayerList.tsx
+import { useEffect, useRef, useState, useCallback } from "react";
 import { db } from "@/database/db";
 import type { Player } from "@/database/types/player";
+import { PlayerCard } from "./PlayerCard";
 
 export function PlayerList() {
   const [players, setPlayers] = useState<Player[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [panel, setPanel] = useState({ w: 300, h: 300 });
 
-  // Baselines
-  const ICON_BASE = 80;     // w-14/h-14
-  const GAP_BASE  = 12;
-  const OUTER_PAD = 20;     // Sicherheitsabstand zum Panel
-  const BORDER_PX = 4;      // Tailwind border-4 = 4px
+  // --- Größen (vereinfacht; nutze deine existierenden Berechnungen) ---
+  const OUTER_PAD = 20;
+  const BORDER_PX = 4;
+  const ICON_BASE = 56;
+  const GAP_BASE = 12;
 
-  // Panel messen
-    useEffect(() => {
+  useEffect(() => {
     const el = containerRef.current;
     if (!el || typeof ResizeObserver === "undefined") return;
-
-    const obs = new ResizeObserver((entriesList: ResizeObserverEntry[]) => {
-        const entry = entriesList?.[0];
-        if (!entry) return;
-
-        // contentRect ist überall verfügbar; fallback nur zur Sicherheit
-        const rect = entry.contentRect ?? el.getBoundingClientRect();
-        setPanel({ w: rect.width, h: rect.height });
+    const obs = new ResizeObserver((entries) => {
+      const entry = entries?.[0];
+      if (!entry) return;
+      const rect = entry.contentRect ?? el.getBoundingClientRect();
+      setPanel({ w: rect.width, h: rect.height });
     });
-
     obs.observe(el);
     return () => {
-        try { obs.unobserve(el); } catch {/* noop */}
+      try {
+        obs.unobserve(el);
         obs.disconnect();
+      } catch {
+        /* noop */
+      }
     };
-    }, []);
-
-  // Spieler laden
-  useEffect(() => {
-    db.players.orderBy("seat").toArray().then(setPlayers);
   }, []);
 
+  const refresh = useCallback(async () => {
+    const list = await db.players.orderBy("seat").toArray();
+    setPlayers(list);
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
   const N = Math.max(1, players.length);
-
-  // Verfügbarer Innenraum (Quadrat) – ohne äußeres Padding
-  const innerSide = Math.max(0, Math.min(panel.w, panel.h) - 5 * OUTER_PAD);
-
-  // WICHTIG: Breite/Höhe des KREIS-ELEMENTS so wählen, dass
-  // border (je Seite 4px) MIT in den verfügbaren Raum passt.
-  // -> content-box: width/height + 2*border = tatsächliche Außenkante
+  const innerSide = Math.max(0, Math.min(panel.w, panel.h) - 2 * OUTER_PAD);
   const circleSize = Math.max(0, innerSide - 2 * BORDER_PX);
-  const Rcircle = circleSize / 2;                // sichtbarer Kreis-Radius bis Außenkante
-  const Cmax    = 2 * Math.PI * Rcircle;         // Umfang, auf dem Avatare sitzen
-
-  // Wunsch-Segment je Spieler, skaliere runter wenn zu eng
+  const Rcircle = circleSize / 2;
+  const Cmax = 2 * Math.PI * Rcircle;
   const perSlot = ICON_BASE + GAP_BASE;
-  const scale   = Math.min(1, Cmax / (N * perSlot));
-  const icon    = Math.max(24, ICON_BASE * scale);   // Untergrenze 24px
-  // Avatare vollständig innerhalb des Kreises:
-  const radius  = Math.max(0, Rcircle - icon / 2);
+  const scale = Math.min(1, Cmax / (N * perSlot));
+  const iconSize = Math.max(28, ICON_BASE * scale);
+  const radius = Math.max(0, Rcircle - iconSize / 2);
+
+  // --- Mutationen: Player updaten ---
+  const updatePlayer = useCallback(async (id: number, patch: Partial<Player>) => {
+    await db.players.update(id, patch);
+    await refresh();
+  }, [refresh]);
+
+  const handleToggleAlive = useCallback(
+    (id: number, next: boolean) => updatePlayer(id, { alive: next }),
+    [updatePlayer]
+  );
+
+  const handleOpenDetails = useCallback((p: Player) => {
+    // z. B. Modal öffnen oder Sidebar füllen
+    // openPlayerDetails(p)
+    // Hier nur Platzhalter:
+    console.debug("open details for", p);
+  }, []);
 
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center">
@@ -69,10 +83,8 @@ export function PlayerList() {
           return (
             <li
               key={p.id}
-              className="absolute rounded-full bg-neutral-800 text-white flex items-center justify-center shadow"
+              className="absolute"
               style={{
-                width: icon,
-                height: icon,
                 top: "50%",
                 left: "50%",
                 transform: `
@@ -81,12 +93,15 @@ export function PlayerList() {
                   translate(${radius}px)
                   rotate(-${angle}deg)
                 `,
-                fontSize: Math.max(10, Math.min(14, 12 * scale)),
-                padding: Math.max(2, icon * 0.08),
+                transformOrigin: "center center",
               }}
-              title={p.name}
             >
-              {p.name}
+              <PlayerCard
+                player={p}
+                size={iconSize}
+                onToggleAlive={handleToggleAlive}
+                onOpenDetails={handleOpenDetails}
+              />
             </li>
           );
         })}

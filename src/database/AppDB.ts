@@ -3,7 +3,7 @@ import Dexie, { type Table } from "dexie"
 import type { Player } from "@/database/types/player"
 
 export default class AppDB extends Dexie {
-  players!: Table<Player, "id">
+  players!: Table<Player, number>
 
   constructor() {
     super("BloodyNotesDB")
