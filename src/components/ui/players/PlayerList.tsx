@@ -79,7 +79,19 @@ export function PlayerList() {
         className="relative rounded-full border-4 border-neutral-800"
       >
         {players.map((p, i) => {
-          const angle = (360 / N) * i;
+          // robusten Sitz-Index ableiten
+          const raw = typeof p.seat === "number" ? p.seat : parseInt(String(p.seat ?? ""), 10);
+          const hasSeat = Number.isFinite(raw) && raw >= 1;
+
+          // seat 1 → 0, seat 2 → 1, …; Fallback: map-Index
+          const seatIdx = hasSeat ? (raw as number) - 1 : i;
+
+          // zur Sicherheit bei Ausreißern clampen
+          const k = Math.max(0, Math.min(N - 1, seatIdx));
+
+          // 12-Uhr = -90°
+          const angle = (360 / N) * k - 90;
+
           return (
             <li
               key={p.id}
@@ -90,21 +102,17 @@ export function PlayerList() {
                 transform: `
                   translate(-50%, -50%)
                   rotate(${angle}deg)
-                  translate(${radius}px)
+                  translate(-${radius}px)
                   rotate(-${angle}deg)
                 `,
                 transformOrigin: "center center",
               }}
             >
-              <PlayerCard
-                player={p}
-                size={iconSize}
-                onToggleAlive={handleToggleAlive}
-                onOpenDetails={handleOpenDetails}
-              />
+              <PlayerCard player={p} size={iconSize} onToggleAlive={handleToggleAlive} onOpenDetails={handleOpenDetails} />
             </li>
           );
         })}
+
       </ul>
     </div>
   );
