@@ -37,13 +37,19 @@ type NewGameSetupModalProps = {
 }
 
 const formSchema = z.object({
-  script: z
-    .string()
-    .min(1, "Please select a Script."), // verhindert leere Auswahl
-  players: z
-    .string(),
-})
-
+  script: z.string().min(1, "Please select a Script."),
+  players: z.string()
+    .refine(val => val.trim().length > 0, "Please enter players.")
+    .refine(val => {
+      const list = val.split(",").map(s => s.trim()).filter(Boolean);
+      return list.length >= 5 && list.length <= 15;
+    }, `Enter between 5 and 15 players.`)
+    .refine(val => {
+      const list = val.split(",").map(s => s.trim()).filter(Boolean);
+      const set = new Set(list.map(n => n.toLowerCase()));
+      return set.size === list.length;
+    }, "Duplicate player names found.")
+});
 
 const scripts = [
   { label: "Trouble Brewing", value: "tb" },
@@ -62,13 +68,14 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
       defaultValues: {
         script: "",
         players: "",
-      },
+      } 
     })
   
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     console.log("Form data:", data)
     setIsSetupVisible(false)
+    form.reset()
   }
 
   function closeModal() {
