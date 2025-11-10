@@ -43,10 +43,6 @@ const formSchema = z.object({
     .refine(val => val.trim().length > 0, "Please enter players.")
     .refine(val => {
       const list = val.split(",").map(s => s.trim()).filter(Boolean);
-      return list.length >= 5 && list.length <= 15;
-    }, `Enter between 5 and 15 players.`)
-    .refine(val => {
-      const list = val.split(",").map(s => s.trim()).filter(Boolean);
       const set = new Set(list.map(n => n.toLowerCase()));
       return set.size === list.length;
     }, "Duplicate player names found.")

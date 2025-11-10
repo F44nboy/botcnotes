@@ -78,37 +78,28 @@ export function PlayerList() {
         style={{ width: circleSize, height: circleSize }}
         className="relative rounded-full border-4 border-neutral-800"
       >
-        {players.map((p, i) => {
-          // robusten Sitz-Index ableiten
-          const raw = typeof p.seat === "number" ? p.seat : parseInt(String(p.seat ?? ""), 10);
-          const hasSeat = Number.isFinite(raw) && raw >= 1;
+      {players.map((p, i) => {
+        const angle = -90 + (360 / N) * i;
 
-          // seat 1 → 0, seat 2 → 1, …; Fallback: map-Index
-          const seatIdx = hasSeat ? (raw as number) - 1 : i;
-
-          // zur Sicherheit bei Ausreißern clampen
-          const k = Math.max(0, Math.min(N - 1, seatIdx));
-
-          // 12-Uhr = -90°
-          const angle = (360 / N) * k - 90;
-
-          return (
-            <li
-              key={p.id}
-              className="absolute"
-              style={{
-                top: "50%",
-                left: "50%",
-                transform: `
-                  translate(-50%, -50%)
-                  rotate(${angle}deg)
-                  translate(-${radius}px)
-                  rotate(-${angle}deg)
-                `,
-                transformOrigin: "center center",
-              }}
-            >
-              <PlayerCard player={p} size={iconSize} onToggleAlive={handleToggleAlive} onOpenDetails={handleOpenDetails} />
+        return (
+          <li
+            key={p.id}
+            className="absolute"
+            style={{
+              top: "50%",
+              left: "50%",
+              transform: `
+                translate(-50%, -50%)
+                rotate(${angle}deg)
+                translate(${radius}px)
+              `,
+              transformOrigin: "center center",
+            }}
+          >
+            {/* Gegenrotation nur auf dem Kind: */}
+              <div style={{ transform: `rotate(${-angle}deg)` }}>
+                <PlayerCard player={p} size={iconSize} onToggleAlive={handleToggleAlive} onOpenDetails={handleOpenDetails} />
+              </div>
             </li>
           );
         })}
