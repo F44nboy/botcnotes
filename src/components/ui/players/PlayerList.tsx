@@ -1,8 +1,8 @@
 // src/components/PlayerList.tsx
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { db } from "@/database/db";
 import type { Player } from "@/database/types/player";
-import { PlayerCard } from "./PlayerCard";
+import { PlayerAvatar } from "@/components/ui/players/PlayerAvatar";
 
 export function PlayerList() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -35,14 +35,16 @@ export function PlayerList() {
     };
   }, []);
 
-  const refresh = useCallback(async () => {
-    const list = await db.players.orderBy("seat").toArray();
-    setPlayers(list);
-  }, []);
+  function refresh() {
+    db.players.orderBy("seat").toArray().then((list) => {
+      setPlayers(list);
+    });
+  }
 
   useEffect(() => {
     refresh();
-  }, [refresh]);
+  }, []);
+
 
   const N = Math.max(1, players.length);
   const innerSide = Math.max(0, Math.min(panel.w, panel.h) - 2 * OUTER_PAD);
@@ -53,24 +55,6 @@ export function PlayerList() {
   const scale = Math.min(1, Cmax / (N * perSlot));
   const iconSize = Math.max(28, ICON_BASE * scale);
   const radius = Math.max(0, Rcircle - iconSize / 2);
-
-  // --- Mutationen: Player updaten ---
-  const updatePlayer = useCallback(async (id: number, patch: Partial<Player>) => {
-    await db.players.update(id, patch);
-    await refresh();
-  }, [refresh]);
-
-  const handleToggleAlive = useCallback(
-    (id: number, next: boolean) => updatePlayer(id, { alive: next }),
-    [updatePlayer]
-  );
-
-  const handleOpenDetails = useCallback((p: Player) => {
-    // z. B. Modal öffnen oder Sidebar füllen
-    // openPlayerDetails(p)
-    // Hier nur Platzhalter:
-    console.debug("open details for", p);
-  }, []);
 
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center">
@@ -98,7 +82,7 @@ export function PlayerList() {
           >
             {/* Gegenrotation nur auf dem Kind: */}
               <div style={{ transform: `rotate(${-angle}deg)` }}>
-                <PlayerCard player={p} size={iconSize} onToggleAlive={handleToggleAlive} onOpenDetails={handleOpenDetails} />
+                <PlayerAvatar player={p} size={iconSize} />
               </div>
             </li>
           );
