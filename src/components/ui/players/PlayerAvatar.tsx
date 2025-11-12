@@ -35,10 +35,9 @@ export function PlayerAvatar({ player, size }: PlayerCardProps) {
             "text-white text-xs sm:text-sm font-medium",
             isAlive ? "bg-neutral-800 hover:bg-neutral-700" : "bg-neutral-700/70 line-through"
           )}
-          title={player.name}
         >
           <div className="flex flex-col items-center leading-tight px-1">
-            <span className="truncate max-w-[90%]">{player.name}</span>
+            <span className="">{player.name}</span>
             <span className="text-[10px] opacity-70">Seat {player.seat}</span>
           </div>
         </button>

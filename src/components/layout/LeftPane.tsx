@@ -1,7 +1,7 @@
 import { PlayerList } from "@/components/ui/players/PlayerList";
 
-export function LeftPane() {
 
+export function LeftPane() {
 
   return (
     <>

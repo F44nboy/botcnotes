@@ -11,8 +11,7 @@ export function PlayerList() {
 
   // --- Größen (vereinfacht; nutze deine existierenden Berechnungen) ---
   const OUTER_PAD = 20;
-  const BORDER_PX = 4;
-  const ICON_BASE = 56;
+  const ICON_BASE = 90;
   const GAP_BASE = 12;
 
   useEffect(() => {
@@ -48,19 +47,19 @@ export function PlayerList() {
 
   const N = Math.max(1, players.length);
   const innerSide = Math.max(0, Math.min(panel.w, panel.h) - 2 * OUTER_PAD);
-  const circleSize = Math.max(0, innerSide - 2 * BORDER_PX);
+  const circleSize = Math.max(0, innerSide - 2);
   const Rcircle = circleSize / 2;
   const Cmax = 2 * Math.PI * Rcircle;
   const perSlot = ICON_BASE + GAP_BASE;
   const scale = Math.min(1, Cmax / (N * perSlot));
   const iconSize = Math.max(28, ICON_BASE * scale);
-  const radius = Math.max(0, Rcircle - iconSize / 2);
+  const icon_center = Math.max(0, Rcircle - iconSize / 2);
 
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center">
       <ul
         style={{ width: circleSize, height: circleSize }}
-        className="relative rounded-full border-4 border-neutral-800"
+        className="relative rounded-full border-neutral-800"
       >
       {players.map((p, i) => {
         const angle = -90 + (360 / N) * i;
@@ -75,7 +74,7 @@ export function PlayerList() {
               transform: `
                 translate(-50%, -50%)
                 rotate(${angle}deg)
-                translate(${radius}px)
+                translate(${icon_center}px)
               `,
               transformOrigin: "center center",
             }}
