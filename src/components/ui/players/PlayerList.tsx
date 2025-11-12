@@ -10,9 +10,13 @@ export function PlayerList() {
   const [panel, setPanel] = useState({ w: 300, h: 300 });
 
   // --- Größen (vereinfacht; nutze deine existierenden Berechnungen) ---
-  const OUTER_PAD = 20;
-  const ICON_BASE = 90;
-  const GAP_BASE = 12;
+  const OUTER_PAD = 10; // Freiraum zwischen Kreis und Pane-Rand
+  const ICON_BASE = 80; // bevorzugte Icon-Größe, bevor Limits greifen
+  const ICON_MIN = 60;  // kleinstmögliche Avatargröße
+  const ICON_MAX = 120; // größtmögliche Avatargröße
+  const GAP_MIN = 15;   // minimaler Abstand zwischen zwei Avataren
+  const GAP_MAX = 32;   // maximaler Abstand zwischen zwei Avataren
+  const MIN_CONTAINER_HEIGHT = 300; // bis zu dieser Höhe skalieren wir auch vertikal
 
   useEffect(() => {
     const el = containerRef.current;
@@ -50,13 +54,41 @@ export function PlayerList() {
   const circleSize = Math.max(0, innerSide - 2);
   const Rcircle = circleSize / 2;
   const Cmax = 2 * Math.PI * Rcircle;
-  const perSlot = ICON_BASE + GAP_BASE;
-  const scale = Math.min(1, Cmax / (N * perSlot));
-  const iconSize = Math.max(28, ICON_BASE * scale);
+  const perSlot = N > 0 ? Cmax / N : 0;
+  const slotLimit = Math.max(0, perSlot);
+
+  const clamp = (value: number, min: number, max: number) =>
+    Math.min(max, Math.max(min, value));
+
+  const effectiveMin = Math.min(ICON_MIN, ICON_MAX);
+  const effectiveMax = Math.max(ICON_MIN, ICON_MAX);
+  const baseIcon = clamp(ICON_BASE, effectiveMin, effectiveMax);
+
+  const maxAllowedByGap =
+    slotLimit > GAP_MIN ? Math.max(0, slotLimit - GAP_MIN) : slotLimit;
+  const minAllowedByGap =
+    slotLimit > GAP_MAX ? Math.max(0, slotLimit - GAP_MAX) : 0;
+
+  const maxAllowed = Math.max(
+    0,
+    Math.min(effectiveMax, slotLimit, maxAllowedByGap)
+  );
+
+  const minAllowed = Math.min(
+    maxAllowed,
+    Math.max(0, Math.min(effectiveMin, slotLimit), minAllowedByGap)
+  );
+
+  const iconSize = clamp(baseIcon, minAllowed, maxAllowed);
+
   const icon_center = Math.max(0, Rcircle - iconSize / 2);
 
   return (
-    <div ref={containerRef} className="w-full h-full flex items-center justify-center">
+    <div
+      ref={containerRef}
+      style={{ minHeight: MIN_CONTAINER_HEIGHT }}
+      className="w-full h-full flex items-center justify-center pb-6"
+    >
       <ul
         style={{ width: circleSize, height: circleSize }}
         className="relative rounded-full border-neutral-800"
