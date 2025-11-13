@@ -14,44 +14,50 @@ export function GameLayout({ left, center, right }: GameLayoutProps) {
         grid gap-3 p-3
         grid-cols-1
         md:grid-cols-2
-        xl:grid-cols-[1fr_0.5fr_0.9fr]
+        xl:grid-cols-[1fr_1.2fr_1fr]
         auto-rows-min xl:auto-rows-fr
       "
     >
-      {/* PLAYER: nimmt auf md eine Spalte, auf xl die erste Spalte */}
+      {/* LEFT: Auf allen Größen sichtbar, aber Reihenfolge variiert */}
       <section
         className="
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
           p-3 min-h-[280px] md:min-h-[360px] xl:min-h-0
           overflow-hidden
-          order-1
           flex flex-col
+          order-3 md:order-1 xl:order-1
         "
       >
-        <div className="flex-1 min-h-0">
-          {left}
-        </div>
+        <div className="flex-1 min-h-0">{left}</div>
       </section>
 
-      {/* NOTES: rechts von Player (md), Mitte (xl) */}
+      {/* CENTER: 
+          - small: ganz oben (order-1)
+          - md: rechts in erster Reihe (order-2)
+          - xl: Mitte zwischen left und right (order-2)
+      */}
       <section
         className="
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
           p-3 min-h-[280px] md:min-h-[360px] xl:min-h-0
           overflow-auto
-          order-3 md:order-2
+          order-1 md:order-2 xl:order-2
         "
       >
         {center}
       </section>
 
-      {/* TIMELINE: unter Player+Notes (md, col-span-2), rechts (xl) */}
+      {/* RIGHT:
+          - small: unter allem (order-2)
+          - md: zweite Zeile, volle Breite (order-3, col-span-2)
+          - xl: rechte Spalte (order-3, col-span-1)
+      */}
       <section
         className="
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
           p-3 min-h-60 xl:min-h-0
           overflow-auto
-          order-2 md:order-3
+          order-2 md:order-3 xl:order-3
           md:col-span-2 xl:col-span-1
         "
       >

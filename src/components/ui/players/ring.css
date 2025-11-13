@@ -1,0 +1,19 @@
+/* The ring element */
+.ring { position: relative; border-radius: 9999px; }
+.ring li { position: absolute; transform: translate(-50%, -50%); }
+.ring::before { content:""; position:absolute; left:50%; top:50%; width:0; height:0; }
+
+
+:root { --r-center: 45%; }
+
+
+.top { left: 50%; top: calc(50% - var(--r-center)); }
+.bottom { left: 50%; top: calc(50% + var(--r-center)); }
+.left { left: calc(50% - var(--r-center)); top: 50%; }
+.right { left: calc(50% + var(--r-center)); top: 50%; }
+
+
+.top.right, .right.top { left: calc(50% + var(--r-center) * 0.707); top: calc(50% - var(--r-center) * 0.707); }
+.right.bottom, .bottom.right { left: calc(50% + var(--r-center) * 0.707); top: calc(50% + var(--r-center) * 0.707); }
+.bottom.left, .left.bottom { left: calc(50% - var(--r-center) * 0.707); top: calc(50% + var(--r-center) * 0.707); }
+.left.top, .top.left { left: calc(50% - var(--r-center) * 0.707); top: calc(50% - var(--r-center) * 0.707); }

@@ -1,4 +1,5 @@
 import { db } from "./db";
+import type { Player } from "./types/player";
 
 export function parsePlayers(input: string){
 
@@ -13,4 +14,9 @@ export function parsePlayers(input: string){
     }));
     db.players.bulkAdd(dbplayers)
     console.log(db.players.toArray())
+}
+
+export async function getAllPlayers(){
+    const players: Player[] = await db.players.toArray()
+    return players ;
 }

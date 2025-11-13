@@ -28,7 +28,7 @@ import { Textarea } from "@/components/ui/shadcn/textarea"
 import { Controller, useForm} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import {parsePlayers} from "@/database/player.utils"
+import {getAllPlayers, parsePlayers} from "@/database/player.utils"
 
 
 type NewGameSetupModalProps = {
@@ -75,6 +75,7 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
  
     setIsSetupVisible(false)
     parsePlayers(data.players)
+    console.log(getAllPlayers())
     form.reset()
 
   }
