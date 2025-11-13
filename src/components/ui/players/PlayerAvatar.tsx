@@ -14,11 +14,14 @@ type PlayerCardProps = {
 };
 
 export function PlayerAvatar({ player, size }: PlayerCardProps) {
-  const isAlive = player.alive ?? true;
 
   const style = {
     width: size,
     height: size,
+    backgroundImage: "url('/token-background.webp')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
   };
 
 
@@ -30,11 +33,7 @@ export function PlayerAvatar({ player, size }: PlayerCardProps) {
         <button
           type="button"
           style={style}
-          className={cn(
-            "rounded-full flex items-center justify-center shadow select-none",
-            "text-white text-xs sm:text-sm font-medium",
-            isAlive ? "bg-neutral-800 hover:bg-neutral-700" : "bg-neutral-700/70 line-through"
-          )}
+          className="rounded-full flex items-center justify-center shadow select-none text-black text-xs sm:text-sm font-medium"
         >
           <div className="flex flex-col items-center leading-tight px-1">
             <span className="">{player.name}</span>
