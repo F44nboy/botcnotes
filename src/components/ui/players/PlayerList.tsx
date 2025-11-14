@@ -55,9 +55,9 @@ export function PlayerList() {
 
   // Basiswerte (wie vorher) für kleine/mittlere Screens
   let ICON_MIN = 40;
-  let ICON_MAX = 88;
+  let ICON_MAX = 100;
   let GAP_PX   = 8;
-  let iconBase = 80;
+  let iconBase = 90;
 
   // Für große Screens bewusst „größer & dichter“ setzen
   if (isLarge) {
@@ -99,7 +99,16 @@ export function PlayerList() {
     <div ref={containerRef} className="w-full h-full flex items-center justify-center">
       <ul role="list" style={ulStyle} className="ring relative rounded-full border border-neutral-800">
         {players.length === 0 ? (
-          <li className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs opacity-60">
+          <li
+            role="note"
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              fontSize: "1rem", // text-xs
+              pointerEvents: "none",
+            }}
+          >
             No players to display
           </li>
         ) : (
