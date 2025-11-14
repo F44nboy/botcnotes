@@ -44,7 +44,7 @@ export function PlayerList() {
 
   // Kreisberechnung (Cap zur CSS-Obergrenze passend)
   const { circleSize, Rcircle } = useMemo(
-    () => computeCircle(panel, { OUTER_PAD: 12, BORDER_PX: 2, CIRCLE_MAX_PX: 640, angleOffsetDeg: -90 }),
+    () => computeCircle(panel, { OUTER_PAD: 12, CIRCLE_MAX_PX: 640, angleOffsetDeg: -90 }),
     [panel]
   );
 
@@ -95,9 +95,38 @@ export function PlayerList() {
     "--r-center": rCenterPercent,
   };
 
+  // Hilfsunktionen zur Winkelberechnung
+  // Winkel mit gleichem Offset wie bei polarStyle
+  const seatAngleDeg = (i: number, N: number, offsetDeg = -90) =>
+    offsetDeg + (360 / Math.max(N, 1)) * i;
+
+  // 8-Wege-Sektor (0..7) aus Winkel ableiten
+  function sector8(i: number, N: number, offsetDeg = -90): number {
+    const a = seatAngleDeg(i, N, offsetDeg);
+    const norm = ((a % 360) + 360) % 360;           // 0..359.999
+    return Math.round(norm / 45) % 8;               // 0..7
+  }
+
+  function labelClassFor(i: number, N: number, offsetDeg = -90): string {
+    // Mapping 0..7 → Klassenname, Start bei 0°=rechts; wir wollen -90°=oben,
+    // deshalb stimmt das mit polarStyle-Offset zusammen (siehe Mapping):
+    const s = sector8(i, N, offsetDeg);
+    switch (s) {
+      case 0: return "label-right";
+      case 1: return "label-bottom-right";
+      case 2: return "label-bottom";
+      case 3: return "label-bottom-left";
+      case 4: return "label-left";
+      case 5: return "label-top-left";
+      case 6: return "label-top";
+      case 7: return "label-top-right";
+      default: return "label-bottom";
+    }
+  }
+
   return (
-    <div ref={containerRef} className="w-full h-full flex items-center justify-center">
-      <ul role="list" style={ulStyle} className="ring relative rounded-full border border-neutral-800">
+    <div ref={containerRef} className="w-full h-full flex items-center justify-center p-4">
+      <ul role="list" style={ulStyle} className="relative rounded-full">
         {players.length === 0 ? (
           <li
             role="note"
@@ -112,22 +141,24 @@ export function PlayerList() {
             No players to display
           </li>
         ) : (
-          players.map((p, i) => {
-            const cls = USE_PRESETS ? positionalClass(N, i) : null;
-            const style = cls ? undefined : polarStyle(i, N, Rcenter, -90);
-            return (
-              <li key={p.id} role="listitem" className={(cls ? `absolute ${cls}` : "absolute")} style={style}>
-                {/* Gegenrotation nur im Polar-Fallback nötig */}
-                {cls ? (
-                  <PlayerAvatar player={p} />
-                ) : (
-                  <div style={{ transform: `rotate(${90 - (360 / Math.max(N, 1)) * i}deg)` }}>
-                    <PlayerAvatar player={p} />
-                  </div>
-                )}
-              </li>
-            );
-          })
+        players.map((p, i) => {
+          const cls = USE_PRESETS ? positionalClass(N, i) : null;
+          const style = cls ? undefined : polarStyle(i, N, Rcenter, -90);
+
+          const nameClass = labelClassFor(i, N, -90);
+
+          return (
+            <li key={p.id} className={cls ? `absolute ${cls}` : "absolute"} style={style}>
+              {cls ? (
+                <PlayerAvatar player={p} nameClass={nameClass} />
+              ) : (
+                <div style={{ transform: `rotate(${90 - (360 / Math.max(N, 1)) * i}deg)` }}>
+                  <PlayerAvatar player={p} nameClass={nameClass} />
+                </div>
+              )}
+            </li>
+          );
+        })
         )}
       </ul>
     </div>

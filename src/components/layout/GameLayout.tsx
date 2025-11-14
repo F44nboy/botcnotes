@@ -14,54 +14,50 @@ export function GameLayout({ left, center, right }: GameLayoutProps) {
         grid gap-3 p-3
         grid-cols-1
         md:grid-cols-2
-        xl:grid-cols-[1fr_1.2fr_1fr]
-        auto-rows-min xl:auto-rows-fr
+        xl:grid-cols-[minmax(260px,1fr)_minmax(360px,1.5fr)_minmax(260px,1fr)]
+        auto-rows-auto
       "
     >
-      {/* LEFT: Auf allen Größen sichtbar, aber Reihenfolge variiert */}
+      {/* LEFT */}
       <section
         className="
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
-          p-3 min-h-[280px] md:min-h-[360px] xl:min-h-0
-          overflow-hidden
+          p-3
           flex flex-col
           order-3 md:order-1 xl:order-1
         "
       >
-        <div className="flex-1 min-h-0">{left}</div>
+        <div className="flex-1">{left}</div>
       </section>
 
-      {/* CENTER: 
-          - small: ganz oben (order-1)
-          - md: rechts in erster Reihe (order-2)
-          - xl: Mitte zwischen left und right (order-2)
-      */}
+      {/* CENTER (Townsquare) */}
       <section
         className="
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
-          p-3 min-h-[280px] md:min-h-[360px] xl:min-h-0
-          overflow-auto
+          p-3
+          flex flex-col
           order-1 md:order-2 xl:order-2
         "
       >
-        {center}
+        {/* Mindesthöhe für den Circle, nicht schrumpfbar auf < 320px Höhe */}
+        <div className="flex-1 min-h-[320px]">
+          {center}
+        </div>
       </section>
 
-      {/* RIGHT:
-          - small: unter allem (order-2)
-          - md: zweite Zeile, volle Breite (order-3, col-span-2)
-          - xl: rechte Spalte (order-3, col-span-1)
-      */}
+      {/* RIGHT */}
       <section
         className="
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
-          p-3 min-h-60 xl:min-h-0
-          overflow-auto
+          p-3
+          flex flex-col
           order-2 md:order-3 xl:order-3
           md:col-span-2 xl:col-span-1
         "
       >
-        {right}
+        <div className="flex-1">
+          {right}
+        </div>
       </section>
     </div>
   );
