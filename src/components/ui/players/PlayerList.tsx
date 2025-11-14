@@ -1,8 +1,7 @@
 // src/components/ui/players/PlayerList.tsx
-import { useEffect, useMemo, useRef, useState } from "react";
+import {useMemo, useRef } from "react";
 import type { CSSProperties } from "react";
-import type { Player } from "@/database/types/player";
-import { getAllPlayers } from "@/database/player.utils"; // Pfad ggf. anpassen
+import { usePlayers } from "@/features/state/players-context";
 import { PlayerAvatar } from "@/components/ui/players/PlayerAvatar";
 import { positionalClass } from "@/components/ui/players/seat-presets";
 import { usePanel, computeCircle, polarStyle } from "@/components/ui/players/useRing";
@@ -26,15 +25,8 @@ const ringContainerStyle: RingCSSVars = {
 };
 
 export function PlayerList() {
-  const [players, setPlayers] = useState<Player[]>([]);
+   const { players } = usePlayers();
 
-  useEffect(() => {
-    async function load() {
-      const list = await getAllPlayers();
-      setPlayers(list);
-    }
-    load();
-  }, []);
 
   const USE_PRESETS = false; // Polar-Fallback als Standard
 

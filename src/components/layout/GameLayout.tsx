@@ -11,10 +11,10 @@ export function GameLayout({ left, center, right }: GameLayoutProps) {
     <div
       className="
         min-h-150
-        grid gap-3 p-3
+        grid gap-3
         grid-cols-1
         md:grid-cols-2
-        xl:grid-cols-[minmax(260px,1fr)_minmax(360px,1.5fr)_minmax(260px,1fr)]
+        xl:grid-cols-[minmax(260px,1fr)_minmax(400px,1.5fr)_minmax(260px,1fr)]
         auto-rows-auto
       "
     >
@@ -34,13 +34,12 @@ export function GameLayout({ left, center, right }: GameLayoutProps) {
       <section
         className="
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
-          p-3
           flex flex-col
           order-1 md:order-2 xl:order-2
         "
       >
         {/* Mindesthöhe für den Circle, nicht schrumpfbar auf < 320px Höhe */}
-        <div className="flex-1 min-h-[320px]">
+        <div className="flex-1 min-h-80">
           {center}
         </div>
       </section>

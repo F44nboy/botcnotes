@@ -28,8 +28,7 @@ import { Textarea } from "@/components/ui/shadcn/textarea"
 import { Controller, useForm} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import {getAllPlayers, parsePlayers} from "@/database/player.utils"
-
+import { savePlayers } from "@/database/player.utils"
 
 type NewGameSetupModalProps = {
   isSetupVisible: boolean;
@@ -68,14 +67,21 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
       } 
     })
   
-
+  function parsePlayersFromForm(input: string){
+    const dbplayers = input.split(",")
+    .map(name => name.trim())
+    .filter(name => name.length > 0)
+    .map((name, index) => ({
+      id: index + 1,
+      seat: index + 1,
+      name,
+      alive: true,
+    }));
+    return dbplayers;
+}
   function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("Form data:", data)
-    console.log("PlayerList", data.players)
- 
+    savePlayers(parsePlayersFromForm(data.players))
     setIsSetupVisible(false)
-    parsePlayers(data.players)
-    console.log(getAllPlayers())
     form.reset()
 
   }

@@ -1,6 +1,3 @@
-// import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor'
-// import Editor from "@/components/ui/Editor";
-
 import { PlayerList } from "../ui/players/PlayerList";
 
 export function CenterPane() {
@@ -10,7 +7,7 @@ export function CenterPane() {
         Townsquare
       </h2>
       <div className="flex-1">
-        <PlayerList />
+        <PlayerList  />
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 // src/components/ui/players/PlayerAvatar.tsx
 import type { Player } from "@/database/types/player";
 import "./ring.css";
+import { useState } from "react";
+import { PlayerCard } from "./PlayerCard";
 
 type PlayerAvatarProps = {
   player: Player;
@@ -9,6 +11,7 @@ type PlayerAvatarProps = {
 };
 
 export function PlayerAvatar({ player, size, nameClass = "label-bottom" }: PlayerAvatarProps) {
+  const [isPlayerCardVisible, setIsPlayerCardVisible] = useState(false);
   const style: React.CSSProperties = {
     width: size ?? "var(--icon, 48px)",
     height: size ?? "var(--icon, 48px)",
@@ -19,12 +22,17 @@ export function PlayerAvatar({ player, size, nameClass = "label-bottom" }: Playe
     borderRadius: "9999px",
   };
 
+  function onPlayerIconHandleClick() {
+    setIsPlayerCardVisible(!isPlayerCardVisible);
+  }
+
   return (
-    <div className="relative flex items-center justify-center">
+    <div onClick={onPlayerIconHandleClick} className="relative flex items-center justify-center">
       {/* Avatar-Kreis */}
+      {isPlayerCardVisible && <PlayerCard player={player} />}
       <div
         style={style}
-        className="relative rounded-full overflow-hidden hover:scale-110 transition-transform cursor-pointer"
+        className="relative rounded-full overflow-hidden hover:scale-120 transition-transform cursor-pointer"
       >
         <span className="absolute inset-0 z-10 bg-[url(/Icon_imp.png)] bg-center bg-cover scale-95" />
 
