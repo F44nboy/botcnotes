@@ -1,11 +1,11 @@
 // src/state/players-context.ts
 import { createContext, useContext } from "react";
-import type { Player } from "@/database/types/player";
+import type { Player } from "@/database/player";
 
 export type PlayersContextValue = {
   players: Player[];
   setPlayers: (players: Player[]) => void;
-  resetPlayers: (players: Player[]) => void;
+  resetPlayers: () => void;
 };
 
 export const PlayersContext = createContext<PlayersContextValue | undefined>(

@@ -1,7 +1,7 @@
 // src/state/PlayersProvider.tsx
 import { useEffect, useState } from "react";
-import type { Player } from "@/database/types/player";
-import { getAllPlayers, savePlayers } from "@/database/player.utils";
+import type { Player } from "@/database/player";
+import { deletePlayersFromDB, getAllPlayersFromDB, savePlayersToDB } from "@/database/db.player.utils";
 import { PlayersContext, type PlayersContextValue } from "./players-context";
 
 export function PlayersProvider({ children }: React.PropsWithChildren) {
@@ -9,7 +9,7 @@ export function PlayersProvider({ children }: React.PropsWithChildren) {
 
   useEffect(() => {
     async function load() {
-      const list = await getAllPlayers();
+      const list = await getAllPlayersFromDB();
       setPlayersState(list);
     }
     load();
@@ -17,12 +17,12 @@ export function PlayersProvider({ children }: React.PropsWithChildren) {
 
   async function setPlayers(next: Player[]) {
     setPlayersState(next);
-    await savePlayers(next);
+    await savePlayersToDB(next);
   }
 
-  async function resetPlayers(next: Player[]) {
-    setPlayersState(next);
-    await savePlayers(next);
+  async function resetPlayers() {
+    //setPlayersState(next);
+    await deletePlayersFromDB();
   }
 
   const value: PlayersContextValue = {

@@ -28,7 +28,7 @@ import { Textarea } from "@/components/ui/shadcn/textarea"
 import { Controller, useForm} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { savePlayers } from "@/database/player.utils"
+import { usePlayers } from "@/features/state/players-context"
 
 type NewGameSetupModalProps = {
   isSetupVisible: boolean;
@@ -57,8 +57,10 @@ const scripts = [
   { label: "Bad Moon Rising", value: "bmr" },
 ] as const
 
-//hier startet die componente
+
 export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupModalProps) {
+  const { setPlayers} = usePlayers();
+
   const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
@@ -80,9 +82,9 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
     return dbplayers;
 }
   function onSubmit(data: z.infer<typeof formSchema>) {
-    savePlayers(parsePlayersFromForm(data.players))
-    setIsSetupVisible(false)
-    form.reset()
+    setPlayers(parsePlayersFromForm(data.players));
+    setIsSetupVisible(false);
+    form.reset();
 
   }
 

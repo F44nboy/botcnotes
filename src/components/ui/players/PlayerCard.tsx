@@ -5,7 +5,7 @@
 
 import { Button } from "../shadcn/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../shadcn/card";
-import type { Player } from "@/database/types/player";
+import type { Player } from "@/database/player";
 
 type PlayerCardProps = {
   player: Player;

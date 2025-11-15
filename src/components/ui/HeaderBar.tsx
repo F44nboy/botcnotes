@@ -1,4 +1,4 @@
-import { db } from "@/database/db";
+import { usePlayers } from "@/features/state/players-context"
 
 type HeaderBarProps = {
   isSetupVisible: boolean;
@@ -7,13 +7,14 @@ type HeaderBarProps = {
 
 
 export function HeaderBar({ isSetupVisible, setIsSetupVisible }: HeaderBarProps) {
+  const { resetPlayers } = usePlayers();
   function newGameBtnHandleClick() {
     setIsSetupVisible(!isSetupVisible);
   }
 
   async function deleteGameBtnHandleClick() {
-    await db.delete()
-    location.reload()
+    resetPlayers();
+    location.reload();
   }
   
   return (
