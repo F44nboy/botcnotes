@@ -1,5 +1,5 @@
 // src/components/ui/players/PlayerAvatar.tsx
-import type { Player } from "@/database/player";
+import type { Player } from "@/database/types/player";
 import "./ring.css";
 import { useState } from "react";
 import { PlayerCard } from "./PlayerCard";

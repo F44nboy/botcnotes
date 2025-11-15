@@ -1,6 +1,6 @@
 // src/db/AppDB.ts
 import Dexie, { type Table } from "dexie"
-import type { Player } from "@/database/player"
+import type { Player } from "@/database/types/player"
 
 export default class AppDB extends Dexie {
   players!: Table<Player, number>

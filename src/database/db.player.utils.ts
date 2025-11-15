@@ -1,5 +1,5 @@
 import { db } from "./db";
-import type { Player } from "./player";
+import type { Player } from "./types/player";
 
 
 
