@@ -148,8 +148,8 @@ export function PlayerList() {
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center p-4">
         {playerCardSeatNumber !== null && (
-          <div className="absolute top-20 z-50 min-w-100 min-h-200">
-            <PlayerCard seatNumber={playerCardSeatNumber} playerCardRef={playerCardRef} dropdownRef={dropdownRef}/>
+          <div className="fixed inset-0 z-60 flex items-center justify-center min-w-[100px] min-h-[200px]">
+              <PlayerCard seatNumber={playerCardSeatNumber} playerCardRef={playerCardRef} dropdownRef={dropdownRef}/>
           </div>
         )}
           <ul role="list" style={ulStyle} className="relative rounded-full">
