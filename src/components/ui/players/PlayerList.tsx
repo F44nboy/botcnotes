@@ -1,11 +1,12 @@
 // src/components/ui/players/PlayerList.tsx
-import {useMemo, useRef } from "react";
+import {useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { usePlayers } from "@/features/state/players-context";
 import { PlayerAvatar } from "@/components/ui/players/PlayerAvatar";
 import { positionalClass } from "@/components/ui/players/seat-presets";
 import { usePanel, computeCircle, polarStyle } from "@/components/ui/players/useRing";
 import "./ring.css";
+import { PlayerCard } from "./PlayerCard";
 
 // Typisierte CSS-Custom-Properties
 type RingCSSVars = CSSProperties & {
@@ -25,7 +26,35 @@ const ringContainerStyle: RingCSSVars = {
 };
 
 export function PlayerList() {
-   const { players } = usePlayers();
+  const { players } = usePlayers();
+
+  const [playerCardSeatNumber, setPlayerCardSeatNumber] = useState<number|null>(null);
+
+  const playerCardRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  
+  useEffect(() => {
+    if (playerCardSeatNumber === null) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      // Wenn Card oder Dropdown den Klick enthalten → NICHT schließen
+      if (playerCardRef.current?.contains(target)) return;
+      if (dropdownRef.current?.contains(target)) return;
+
+      // Alles andere → Card schließen
+      setPlayerCardSeatNumber(null);
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setPlayerCardSeatNumber, playerCardSeatNumber]);
+
+
 
 
   const USE_PRESETS = false; // Polar-Fallback als Standard
@@ -118,41 +147,46 @@ export function PlayerList() {
 
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center p-4">
-      <ul role="list" style={ulStyle} className="relative rounded-full">
-        {players.length === 0 ? (
-          <li
-            role="note"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              fontSize: "1rem", // text-xs
-              pointerEvents: "none",
-            }}
-          >
-            No players to display
-          </li>
-        ) : (
-        players.map((p, i) => {
-          const cls = USE_PRESETS ? positionalClass(N, i) : null;
-          const style = cls ? undefined : polarStyle(i, N, Rcenter, -90);
-
-          const nameClass = labelClassFor(i, N, -90);
-
-          return (
-            <li key={p.id} className={cls ? `absolute ${cls}` : "absolute"} style={style}>
-              {cls ? (
-                <PlayerAvatar player={p} nameClass={nameClass} />
-              ) : (
-                <div style={{ transform: `rotate(${90 - (360 / Math.max(N, 1)) * i}deg)` }}>
-                  <PlayerAvatar player={p} nameClass={nameClass} />
-                </div>
-              )}
-            </li>
-          );
-        })
+        {playerCardSeatNumber !== null && (
+          <div className="absolute top-20 z-50 min-w-100 min-h-200">
+            <PlayerCard seatNumber={playerCardSeatNumber} playerCardRef={playerCardRef} dropdownRef={dropdownRef}/>
+          </div>
         )}
-      </ul>
+          <ul role="list" style={ulStyle} className="relative rounded-full">
+            {players.length === 0 ? (
+              <li
+                role="note"
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  fontSize: "1rem", // text-xs
+                  pointerEvents: "none",
+                }}
+              >
+                No players to display
+              </li>
+            ) : (
+            players.map((p, i) => {
+              const cls = USE_PRESETS ? positionalClass(N, i) : null;
+              const style = cls ? undefined : polarStyle(i, N, Rcenter, -90);
+
+              const nameClass = labelClassFor(i, N, -90);
+
+              return (
+                <li key={p.id} className={cls ? `absolute ${cls}` : "absolute"} style={style}>
+                  {cls ? (
+                    <PlayerAvatar seatNumber={p.seat} nameClass={nameClass} setPlayerCardSeatNumber={setPlayerCardSeatNumber}/>
+                  ) : (
+                    <div style={{ transform: `rotate(${90 - (360 / Math.max(N, 1)) * i}deg)` }}>
+                      <PlayerAvatar seatNumber={p.seat} nameClass={nameClass} setPlayerCardSeatNumber={setPlayerCardSeatNumber} />
+                    </div>
+                  )}
+                </li>
+              );
+            })
+            )}
+          </ul>
     </div>
   );
 }

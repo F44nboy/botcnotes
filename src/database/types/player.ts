@@ -2,7 +2,7 @@ export type Player = {
   id: number;        // stabiler Schlüssel (z. B. von Extension/UUID), initial identisch mit seat.
   seat: number;      // Sitzplatz (1..n), definiert die Reihenfolge im Kreis
   name: string;      // Anzeigename
-  alignment?: string; // z. B. "Loyalist", "Rebel", "Neutral"
+  alignment?: string; // z. B. "Good, Evil, Drunk"
   character?: string; // z. B. "Empath, Chef, Slayer"
   drunk?: boolean;    // betrunken-Status
   poisoned?: boolean; // vergiftet-Status

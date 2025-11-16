@@ -1,17 +1,19 @@
 // src/components/ui/players/PlayerAvatar.tsx
-import type { Player } from "@/database/types/player";
 import "./ring.css";
-import { useState } from "react";
-import { PlayerCard } from "./PlayerCard";
+import { usePlayers } from "@/features/state/players-context";
+import type { Player } from "@/database/types/player";
 
 type PlayerAvatarProps = {
-  player: Player;
+  seatNumber: number;
   size?: number;
   nameClass?: string; // NEU: z.B. "label-top", "label-right", ...
+  setPlayerCardSeatNumber: (visible: number | null) => void;
 };
 
-export function PlayerAvatar({ player, size, nameClass = "label-bottom" }: PlayerAvatarProps) {
-  const [isPlayerCardVisible, setIsPlayerCardVisible] = useState(false);
+export function PlayerAvatar({ seatNumber, size, nameClass = "label-bottom", setPlayerCardSeatNumber }: PlayerAvatarProps) {
+  const { players } = usePlayers();
+  const player: Player | undefined = players.find(p => p.seat === seatNumber);
+
   const style: React.CSSProperties = {
     width: size ?? "var(--icon, 48px)",
     height: size ?? "var(--icon, 48px)",
@@ -23,19 +25,15 @@ export function PlayerAvatar({ player, size, nameClass = "label-bottom" }: Playe
   };
 
   function onPlayerIconHandleClick() {
-    setIsPlayerCardVisible(!isPlayerCardVisible);
+    setPlayerCardSeatNumber(seatNumber);
+
   }
 
+  if (!player) return null;
   return (
     <div onClick={onPlayerIconHandleClick} className="relative flex items-center justify-center">
-      {/* Avatar-Kreis */}
-      {isPlayerCardVisible && <PlayerCard player={player} />}
-      <div
-        style={style}
-        className="relative rounded-full overflow-hidden hover:scale-120 transition-transform cursor-pointer"
-      >
-        <span className="absolute inset-0 z-10 bg-[url(/Icon_imp.png)] bg-center bg-cover scale-95" />
-
+      <div style={style} className="relative rounded-full overflow-hidden hover:scale-120 transition-transform cursor-pointer">
+        <span className="absolute inset-0 z-10 bg-[url(/icons/Townsfolk/Icon_fortuneteller.png)] bg-center bg-cover scale-95" />
         <svg
           className="absolute inset-0 z-20 pointer-events-none"
           viewBox="0 0 140 140"
@@ -68,7 +66,6 @@ export function PlayerAvatar({ player, size, nameClass = "label-bottom" }: Playe
           </text>
         </svg>
       </div>
-
       {/* Name außen, je nach Richtungsklasse */}
       <div className={`name-label ${nameClass}`}>{player.name}</div>
     </div>

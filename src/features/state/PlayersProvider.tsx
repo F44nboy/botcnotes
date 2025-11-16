@@ -7,6 +7,7 @@ import { PlayersContext, type PlayersContextValue } from "./players-context";
 export function PlayersProvider({ children }: React.PropsWithChildren) {
   const [players, setPlayersState] = useState<Player[]>([]);
 
+  
   useEffect(() => {
     async function load() {
       const list = await getAllPlayersFromDB();
