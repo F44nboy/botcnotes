@@ -97,7 +97,8 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
       role="dialog"
       aria-modal="true"
       aria-labelledby="form-title"
-      onClick={closeModal} className={
+      onClick={closeModal} 
+      className={
         `fixed inset-0 flex items-center justify-center transition-colors 
         ${isSetupVisible ? ' bg-[rgba(20,15,30,0.3)] border-[#3A305B] pointer-events-auto' : 'bg-transparent pointer-events-none'
         }`}
@@ -106,7 +107,7 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
         <div onClick={(e) => e.stopPropagation()}
         className={
           //bg-[#1E1A2B]
-          `shadow-lg min-w-100 transition-all
+          `shadow-lg w-full max-w-lg mx-4 transition-all
           ${isSetupVisible ? 'scale-100 opacity-100' : 'scale-125 opacity-0'
           }`}
         >

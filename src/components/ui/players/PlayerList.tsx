@@ -2,6 +2,7 @@
 import {useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { usePlayers } from "@/features/state/players-context";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { PlayerAvatar } from "@/components/ui/players/PlayerAvatar";
 import { positionalClass } from "@/components/ui/players/seat-presets";
 import { usePanel, computeCircle, polarStyle } from "@/components/ui/players/useRing";
@@ -65,44 +66,38 @@ export function PlayerList() {
 
   // Kreisberechnung (Cap zur CSS-Obergrenze passend)
   const { circleSize, Rcircle } = useMemo(
-    () => computeCircle(panel, { OUTER_PAD: 12, CIRCLE_MAX_PX: 640, angleOffsetDeg: -90 }),
+    () => computeCircle(panel, { OUTER_PAD: 12, CIRCLE_MAX_PX: 960, angleOffsetDeg: -90 }),
     [panel]
   );
 
-  // ---------------- Adaptive Icon-Größe (ohne zusätzlichen Scalefactor) ----------------
-  // Ziel: Auf großen Screens Icons spürbar größer + etwas kleinere Lücken.
-  // Lösung: Parameter abhängig von der tatsächlichen Ringgröße wählen.
-  const isLarge = circleSize >= 560; // Schwellwert für „großen“ Ring/Screen
+  const breakpoint = useBreakpoint();
 
-  // Basiswerte (wie vorher) für kleine/mittlere Screens
-  let ICON_MIN = 40;
-  let ICON_MAX = 100;
-  let GAP_PX   = 8;
-  let iconBase = 90;
+  // --- Responsive Icon Sizing ---
 
-  // Für große Screens bewusst „größer & dichter“ setzen
-  if (isLarge) {
-    ICON_MIN = 36;  // leichte Anhebung der Untergrenze
-    ICON_MAX = 110; // mehr Headroom nach oben
-    GAP_PX   = 6;   // etwas enger zusammen
-    iconBase = 100;  // größere Ziel-Icongröße
+  // 1. Set a base icon size based on the viewport's Tailwind breakpoint.
+  let baseIconSize;
+  switch (breakpoint) {
+    case 'lg':
+    case 'xl':
+    case '2xl':
+      baseIconSize = 100; // Cap at 100px for large screens
+      break;
+    case 'md':
+      baseIconSize = 100; // Grow to 100px on medium screens
+      break;
+    case 'sm':
+    case 'xs':
+    default:
+      baseIconSize = 72; // Smaller size for small screens
+      break;
   }
 
-  const clamp = (x: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, x));
+  // 2. Calculate the max icon size to prevent overlap, including a minimum gap.
+  const GAP_PX = 8;
+  const maxIconForOverlap = N > 0 ? (Math.PI * circleSize - N * GAP_PX) / (N + Math.PI) : Infinity;
 
-  // Start mit gewünschter Basis, durch Min/Max begrenzt
-  let icon = clamp(iconBase, ICON_MIN, ICON_MAX);
-
-  // 2-Pass-Anpassung: Icongröße am Umfang deckeln, damit es nicht überlappt
-  for (let pass = 0; pass < 2; pass++) {
-    const RcenterTemp = Math.max(0, Rcircle - icon / 2);
-    const C = 2 * Math.PI * RcenterTemp;
-    const perSlotAvail = N > 0 ? C / N : Infinity;
-    const iconMaxCirc = Math.max(ICON_MIN, perSlotAvail - GAP_PX);
-    const next = clamp(Math.min(icon, iconMaxCirc), ICON_MIN, ICON_MAX);
-    if (Math.abs(next - icon) < 0.5) { icon = next; break; }
-    icon = next;
-  }
+  // 3. The final icon size is the smaller of the breakpoint-based size or the overlap-safe size.
+  const icon = Math.min(baseIconSize, maxIconForOverlap);
 
   // Finaler Zentrenradius und CSS-Variablen
   const Rcenter = Math.max(0, Rcircle - icon / 2);

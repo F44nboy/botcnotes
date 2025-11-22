@@ -16,9 +16,9 @@ export function PlayersProvider({ children }: React.PropsWithChildren) {
     load();
   }, []);
 
-  async function setPlayers(next: Player[]) {
-    setPlayersState(next);
-    await savePlayersToDB(next);
+  async function setPlayers(players: Player[]) {
+    setPlayersState(players);
+    await savePlayersToDB(players);
   }
 
   async function resetPlayers() {

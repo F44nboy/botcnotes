@@ -112,6 +112,7 @@ export function PlayerCard({seatNumber, playerCardRef, dropdownRef}: PlayerCardP
                         >
                           {player.character ?? "Choose Character..."}
                         </button>
+
                       </DropdownMenuTrigger>
                       <DropdownMenuContent ref={dropdownRef} className="w-56">
                         <DropdownMenuLabel>Trouble Brewing</DropdownMenuLabel>
