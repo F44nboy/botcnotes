@@ -18,19 +18,7 @@
 .bottom.left, .left.bottom { left: calc(50% - var(--r-center) * 0.707); top: calc(50% + var(--r-center) * 0.707); }
 .left.top, .top.left { left: calc(50% - var(--r-center) * 0.707); top: calc(50% - var(--r-center) * 0.707); }
 
-/* Basis: gemeinsames Styling */
-.name-label {
-  position: absolute;
-  z-index: 30;
-  pointer-events: none;
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.375rem;
-  font-size: 0.75rem;     /* ~12px */
-  color: #fff;
-  background: rgba(38,38,38,0.9);
-  white-space: nowrap;
-  max-width: 10rem;
-}
+
 
 /* Abstand zur Token-Außenkante; skaliert mit --icon */
 :root { --label-gap: 2px; }

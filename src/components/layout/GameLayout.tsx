@@ -11,7 +11,7 @@ export function GameLayout({ left, center, right }: GameLayoutProps) {
     <div
       className="
         min-h-150
-        h-full
+        flex-1
         grid gap-3
         grid-cols-1
         md:grid-cols-2 md:grid-rows-[3fr_1fr]
@@ -22,6 +22,7 @@ export function GameLayout({ left, center, right }: GameLayoutProps) {
       {/* LEFT */}
       <section
         className="
+          overflow-hidden
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
           p-3
           flex flex-col
@@ -34,6 +35,7 @@ export function GameLayout({ left, center, right }: GameLayoutProps) {
       {/* CENTER (Townsquare) */}
       <section
         className="
+          overflow-hidden
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
           flex flex-col
           order-1 md:order-1 xl:order-2
@@ -49,6 +51,7 @@ export function GameLayout({ left, center, right }: GameLayoutProps) {
       {/* RIGHT */}
       <section
         className="
+          overflow-hidden
           rounded-xl border border-neutral-800/70 bg-neutral-900/40 backdrop-blur
           p-3
           flex flex-col

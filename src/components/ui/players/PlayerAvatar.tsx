@@ -67,7 +67,9 @@ export function PlayerAvatar({ seatNumber, size, nameClass = "label-bottom", set
         </svg>
       </div>
       {/* Name außen, je nach Richtungsklasse */}
-      <div className={`name-label ${nameClass}`}>{player.name}</div>
+      <div className={`absolute z-30 pointer-events-none px-2 py-0.5 rounded-md text-white bg-neutral-800/90 whitespace-nowrap max-w-40 text-xs sm:text-sm lg:text-base ${nameClass}`}>
+        {player.name}
+      </div>
     </div>
   );
 }
