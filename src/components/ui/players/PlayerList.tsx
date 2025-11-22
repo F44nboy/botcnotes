@@ -67,7 +67,7 @@ export function PlayerList() {
     let mdis = 130; // mediumIconSize
     switch (breakpoint) {
       case 'lg': case 'xl': case '2xl':
-        dcs = 800; break;
+        dcs = 600; break;
       case 'md':
         dcs = 700; mdis = 130; break;
       case 'sm':
@@ -99,7 +99,7 @@ export function PlayerList() {
 
   switch (breakpoint) {
     case 'xl': case '2xl':
-      baseIconSize = clamp(circleSize / 6.5, 110, 180); 
+      baseIconSize = clamp(circleSize / 8, 100, 140); 
       break;
     case 'lg':
       baseIconSize = 140; // Large fixed size for iPad Pro
