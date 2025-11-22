@@ -1,5 +1,6 @@
 // src/components/ui/players/PlayerList.tsx
 import {useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 import { usePlayers } from "@/features/state/players-context";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
@@ -27,9 +28,15 @@ const ringContainerStyle: RingCSSVars = {
 export function PlayerList() {
   const { players } = usePlayers();
   const [playerCardSeatNumber, setPlayerCardSeatNumber] = useState<number|null>(null);
+  const [portalNode, setPortalNode] = useState<HTMLElement | null>(null);
   const playerCardRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   
+  useEffect(() => {
+    // Set portal node once on mount, where document is available
+    setPortalNode(document.getElementById('player-card-portal-root'));
+  }, []);
+
   useEffect(() => {
     if (playerCardSeatNumber === null) return;
     function handleClickOutside(e: MouseEvent) {
@@ -92,8 +99,7 @@ export function PlayerList() {
 
   switch (breakpoint) {
     case 'xl': case '2xl':
-      // For extra large screens, use dynamic sizing but with a high floor and ceiling.
-      baseIconSize = clamp(circleSize / 6.5, 100, 160); 
+      baseIconSize = clamp(circleSize / 6.5, 110, 180); 
       break;
     case 'lg':
       baseIconSize = 140; // Large fixed size for iPad Pro
@@ -149,10 +155,13 @@ export function PlayerList() {
 
   return (
     <div ref={containerRef} className="w-full h-full flex items-center justify-center p-4">
-      {playerCardSeatNumber !== null && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center min-w-[100px] min-h-[200px]">
-          <PlayerCard seatNumber={playerCardSeatNumber} playerCardRef={playerCardRef} dropdownRef={dropdownRef}/>
-        </div>
+      {playerCardSeatNumber !== null &&
+        portalNode &&
+        createPortal(
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <PlayerCard seatNumber={playerCardSeatNumber} playerCardRef={playerCardRef} dropdownRef={dropdownRef}/>
+          </div>,
+          portalNode
       )}
       <ul role="list" style={ulStyle} className="relative rounded-full">
         {players.length === 0 ? (
