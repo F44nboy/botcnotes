@@ -6,7 +6,7 @@
 import { usePlayers } from "@/features/state/players-context";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../shadcn/card";
 import type { Player } from "@/database/types/player";
-import { Item, ItemActions, ItemContent, ItemGroup, ItemMedia, ItemTitle } from "../shadcn/item";
+import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from "../shadcn/item";
 import { Button } from "../shadcn/button";
 import { PlusIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../shadcn/dropdown-menu";
@@ -33,7 +33,7 @@ export function PlayerCard({setPlayerCardSeatNumber, seatNumber, playerCardRef, 
   if (!player) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <Card ref={playerCardRef} className="min-w-50 max-w-[420px] sm:max-w-[480px] md:max-w-[540px] bg-[#000c] text-neutral-200">
+      <Card ref={playerCardRef} className="max-w-[420px] sm:max-w-[480px] md:max-w-[540px] bg-[#000c] text-neutral-200">
         <CardHeader>
           <CardTitle className="">
             <span className="text-purple-400 mr-2">
@@ -141,36 +141,35 @@ export function PlayerCard({setPlayerCardSeatNumber, seatNumber, playerCardRef, 
                     </DropdownMenu>
                   </ItemContent>
                 </Item>
-                <ItemGroup>
-                  <Item className="px-0 pt-5">
-                    <ItemContent>
-                      <div className="flex flex-wrap items-center gap-2 max-w-70">
-                          <button
-                            type="button"
-                            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-md">
-                            <Badge variant="destructive">Evil</Badge>
-                          </button>
-                          <button
-                            type="button"
-                            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-md"
-                            >
-                            <Badge variant="default">Townsfolk</Badge>
-                          </button>
-                          <button
-                            type="button"
-                            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-md"
-                            >
-                            <Badge variant="destructive">Minion</Badge>
-                          </button>
-                      </div>
-                    </ItemContent>
-                    <ItemActions>
-                      <Button variant="destructive" size="icon" className="rounded-full">
-                        <PlusIcon />
-                      </Button>
-                    </ItemActions>
-                  </Item>
-                </ItemGroup>
+                <Item className="px-0 pt-5">
+                  <ItemContent>
+                    <div className="flex flex-wrap items-center gap-2 max-w-70">
+                        <Button
+                          variant="ghost" // Entfernt Hintergrund und Rahmen
+                          className="h-auto p-0 cursor-pointer" // Passt die Größe an den Inhalt an (das Badge)
+                          aria-label={`Attribut entfernen`}
+                        >
+                          <Badge variant="destructive" className="pointer-events-none">
+                            Evil
+                          </Badge>
+                        </Button>
+                        <Button
+                          variant="ghost" // Entfernt Hintergrund und Rahmen
+                          className="h-auto p-0 cursor-pointer" // Passt die Größe an den Inhalt an (das Badge)
+                          aria-label={`Attribut entfernen`}
+                        >
+                          <Badge variant="destructive" className="pointer-events-none">
+                            Minion
+                          </Badge>
+                        </Button>
+                    </div>
+                  </ItemContent>
+                  <ItemActions>
+                    <Button variant="destructive" size="icon" className="rounded-full">
+                      <PlusIcon />
+                    </Button>
+                  </ItemActions>
+                </Item>
             </div>
             <Separator />
             <Item>
