@@ -19,11 +19,16 @@ type PlayerCardProps = {
   seatNumber: number;
   playerCardRef: React.RefObject<HTMLDivElement | null>;
   dropdownRef?: React.RefObject<HTMLDivElement | null>;
+  setPlayerCardSeatNumber: (visible: number | null) => void;
 };
-export function PlayerCard({seatNumber, playerCardRef, dropdownRef}: PlayerCardProps) {
+export function PlayerCard({setPlayerCardSeatNumber, seatNumber, playerCardRef, dropdownRef}: PlayerCardProps) {
   const { players } = usePlayers();
   const player: Player | undefined = players.find(p => p.seat === seatNumber);
   const [position, setPosition] = useState("bottom")
+
+  function onClosePlayerCardClick() {
+    setPlayerCardSeatNumber(null);
+  }
 
   if (!player) return null;
   return (
@@ -177,6 +182,7 @@ export function PlayerCard({seatNumber, playerCardRef, dropdownRef}: PlayerCardP
           </CardContent>
         <CardFooter className="flex justify-end gap-2 pt-4">
           <Button
+            onClick={onClosePlayerCardClick}
             className="
               px-3 py-2 
               rounded-md 

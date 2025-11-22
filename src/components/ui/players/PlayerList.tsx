@@ -159,7 +159,7 @@ export function PlayerList() {
         portalNode &&
         createPortal(
           <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <PlayerCard seatNumber={playerCardSeatNumber} playerCardRef={playerCardRef} dropdownRef={dropdownRef}/>
+            <PlayerCard setPlayerCardSeatNumber={setPlayerCardSeatNumber} seatNumber={playerCardSeatNumber} playerCardRef={playerCardRef} dropdownRef={dropdownRef}/>
           </div>,
           portalNode
       )}
