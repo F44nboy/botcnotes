@@ -1,7 +1,7 @@
 // src/state/PlayersProvider.tsx
 import { useEffect, useState } from "react";
-import type { Player } from "@/database/types/player";
-import { deletePlayersFromDB, getAllPlayersFromDB, savePlayersToDB } from "@/database/db.player.utils";
+import type { Player } from "@/features/database/types/player";
+import { deletePlayersFromDB, getAllPlayersFromDB, savePlayersToDB } from "@/features/database/db.player.utils";
 import { PlayersContext, type PlayersContextValue } from "./players-context";
 
 export function PlayersProvider({ children }: React.PropsWithChildren) {

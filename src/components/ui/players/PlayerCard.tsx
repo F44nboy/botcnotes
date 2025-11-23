@@ -5,7 +5,7 @@
 
 import { usePlayers } from "@/features/state/players-context";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../shadcn/card";
-import type { Player } from "@/database/types/player";
+import type { Player } from "@/features/database/types/player";
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from "../shadcn/item";
 import { Button } from "../shadcn/button";
 import { PlusIcon } from "lucide-react";
