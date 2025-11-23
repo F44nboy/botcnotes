@@ -48,7 +48,7 @@ const formSchema = z.object({
 });
 
 const scripts = [
-  { label: "Trouble Brewing", value: "tb" },
+  { label: "Trouble Brewing", value: "trouble_brewing" },
   { label: "Uncertain Death", value: "ud" },
   { label: "Pies Baking", value: "pb" },
   { label: "Silent Minority", value: "sm" },
