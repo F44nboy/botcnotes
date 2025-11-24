@@ -29,6 +29,13 @@ import { Controller, useForm} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { usePlayers } from "@/features/state/players-context"
+import { useEffect, useState } from "react"
+import { fetchAvailableScripts, fetchFullScript } from "@/features/api/scriptApi"
+
+type ScriptOption = {
+  value: string;
+  label: string;
+};
 
 type NewGameSetupModalProps = {
   isSetupVisible: boolean;
@@ -47,18 +54,33 @@ const formSchema = z.object({
     }, "Duplicate player names found.")
 });
 
-const scripts = [
-  { label: "Trouble Brewing", value: "trouble_brewing" },
-  { label: "Uncertain Death", value: "ud" },
-  { label: "Pies Baking", value: "pb" },
-  { label: "Silent Minority", value: "sm" },
-  { label: "A new Beginning", value: "nb" },
-  { label: "Gentle Night", value: "gt" },
-  { label: "Bad Moon Rising", value: "bmr" },
-] as const
-
-
 export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupModalProps) {
+  const [scripts, setScripts] = useState<ScriptOption[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadScripts = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const data: string[] = await fetchAvailableScripts(); // API-Aufruf
+            const formattedScripts = data.map(scriptFile => {
+              const scriptName = scriptFile.replace('.json', '');
+              const label = scriptName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+              return { value: scriptName, label: label };
+            });
+            setScripts(formattedScripts);
+        } catch (err) {
+            setError("Could not load scripts.");
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    loadScripts();
+  }, []);
+    
   const { setPlayers} = usePlayers();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -80,12 +102,26 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
       alive: true,
     }));
     return dbplayers;
-}
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  }
+  
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     setPlayers(parsePlayersFromForm(data.players));
-    setIsSetupVisible(false);
-    form.reset();
 
+    try {
+      // Access the selected script from the form data and fetch the full script
+      const fullScript = await fetchFullScript(data.script);
+      console.log("Successfully fetched full script:", fullScript);
+      // You can now use the fullScript object, e.g., save it to a global state
+      
+      // Finally, close the modal and reset the form
+      setIsSetupVisible(false);
+      form.reset();
+
+    } catch (error) {
+      console.error("Failed to fetch full script on submit:", error);
+      // Optionally, set an error state here to show it in the UI
+      setError(`Failed to load script: ${data.script}`);
+    }
   }
 
   function closeModal() {
@@ -139,11 +175,13 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
                               {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
                               )}
+                              {error && <FieldError errors={[{ message: error }]}/>}
                             </FieldContent>
                             <Select
                               name={field.name}
                               value={field.value}
                               onValueChange={field.onChange}
+                              disabled={isLoading}
                             >
                               <SelectTrigger
                                 id="form-ngf-select-script"
@@ -153,13 +191,19 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent position="popper" className="bg-[rgba(30,25,40,0.6)] backdrop-blur-md text-neutral-200 border border-[#3A305B]">
-                                <SelectItem value="auto">Select Script</SelectItem>
-                                <SelectSeparator />
-                                {scripts.map((script) => (
-                                  <SelectItem key={script.value} value={script.value}>
-                                    {script.label}
-                                  </SelectItem>
-                                ))}
+                                {isLoading ? (
+                                  <SelectItem value="loading" disabled>Loading scripts...</SelectItem>
+                                ) : (
+                                  <>
+                                    <SelectItem value="auto">Select Script</SelectItem>
+                                    <SelectSeparator />
+                                    {scripts.map((script) => (
+                                      <SelectItem key={script.value} value={script.value}>
+                                        {script.label}
+                                      </SelectItem>
+                                    ))}
+                                  </>
+                                )}
                               </SelectContent>
                             </Select>
                           </Field>
