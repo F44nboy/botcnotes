@@ -64,7 +64,7 @@ export function PlayerCard({setPlayerCardSeatNumber, seatNumber, playerCardRef, 
                         className="
                           absolute inset-0
                           z-10
-                          bg-[url(/icons/Townsfolk/Icon_fortuneteller.png)]
+                          bg-[url(/icons/townsfolk/Icon_fortuneteller.png)]
                           bg-center bg-cover
                         "
                       />

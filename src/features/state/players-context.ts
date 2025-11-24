@@ -1,6 +1,6 @@
 // src/state/players-context.ts
 import { createContext, useContext } from "react";
-import type { Player } from "@/database/types/player";
+import type { Player } from "@/features/database/types/player";
 
 export type PlayersContextValue = {
   players: Player[];

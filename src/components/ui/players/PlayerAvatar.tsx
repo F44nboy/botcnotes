@@ -1,7 +1,7 @@
 // src/components/ui/players/PlayerAvatar.tsx
 import "./ring.css";
 import { usePlayers } from "@/features/state/players-context";
-import type { Player } from "@/database/types/player";
+import type { Player } from "@/features/database/types/player";
 
 type PlayerAvatarProps = {
   seatNumber: number;
@@ -33,7 +33,7 @@ export function PlayerAvatar({ seatNumber, size, nameClass = "label-bottom", set
   return (
     <div onClick={onPlayerIconHandleClick} className="relative flex items-center justify-center">
       <div style={style} className="relative rounded-full overflow-hidden hover:scale-120 transition-transform cursor-pointer">
-        <span className="absolute inset-0 z-10 bg-[url(/icons/Townsfolk/Icon_fortuneteller.png)] bg-center bg-cover scale-95" />
+        <span className="absolute inset-0 z-10 bg-[url(/icons/townsfolk/Icon_fortuneteller.png)] bg-center bg-cover scale-95" />
         <svg
           className="absolute inset-0 z-20 pointer-events-none"
           viewBox="0 0 140 140"

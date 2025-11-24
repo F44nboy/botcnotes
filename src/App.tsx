@@ -11,10 +11,10 @@ export default function App() {
 
   return (
     <PlayersProvider>
-      {/* AppShell is a pure layout component and renders any children passed in between. */}
-      <AppShell>
-          <GameLayout left={<LeftPane/>} center={<CenterPane />} right={<RightPane />} />
-      </AppShell>
+        {/* AppShell is a pure layout component and renders any children passed in between. */}
+        <AppShell>
+            <GameLayout left={<LeftPane/>} center={<CenterPane />} right={<RightPane />} />
+        </AppShell>
     </PlayersProvider>
   );
 }
