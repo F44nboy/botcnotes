@@ -1,18 +1,18 @@
 // src/db/AppDB.ts
 import Dexie, { type Table } from "dexie"
 import type { Player } from "@/features/database/types/player"
-import type { Script } from "@/features/database/types/script"
+import type { Character } from "@/features/database/types/character"
 
 export default class AppDB extends Dexie {
   players!: Table<Player, number>
-  scripts!: Table<Script, string>
+  characters!: Table<Character, string>
 
   constructor() {
     super("BloodyNotesDB")
 
-    this.version(2).stores({
+    this.version(3).stores({
       players: "id++, seat, name",
-      scripts: "&id" // 'id' ist der Primärschlüssel (der Skriptname)
+      characters: "&id"
     })
   }
 }

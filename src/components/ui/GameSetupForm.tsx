@@ -30,7 +30,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { usePlayers } from "@/features/state/players-context"
 import { useEffect, useState } from "react"
-import { fetchAvailableScripts, fetchFullScript } from "@/features/api/scriptApi"
+import { fetchAvailableScripts } from "@/features/api/scriptApi"
+import { saveScripttoDB } from "@/features/database/db.scripts.utils"
 
 type ScriptOption = {
   value: string;
@@ -109,8 +110,9 @@ export function GameSetupForm({isSetupVisible, setIsSetupVisible}: NewGameSetupM
 
     try {
       // Access the selected script from the form data and fetch the full script
-      const fullScript = await fetchFullScript(data.script);
-      console.log("Successfully fetched full script:", fullScript);
+      
+      await saveScripttoDB(data.script);
+      console.log("Successfully fetched full script:");
       // You can now use the fullScript object, e.g., save it to a global state
       
       // Finally, close the modal and reset the form
